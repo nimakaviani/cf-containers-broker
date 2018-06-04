@@ -1,0 +1,23 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: blockhead-broker
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: blockhead-broker
+    spec:
+      volumes:
+        - name: dockersocket
+          hostPath:
+          path: /var/run/docker.sock
+      containers:
+        - name: blockhead-broker
+          image: swayr/blockhead
+          command:
+          volumeMounts:
+          - mountPath: /host/var/run/docker.sock
+            name: dockersocket

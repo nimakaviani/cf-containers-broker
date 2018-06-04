@@ -1,5 +1,19 @@
-FROM ruby:2.3.3
-LABEL maintainers Ferran Rodenas <frodenas@gmail.com>, Dr Nic Williams <drnicwilliams@gmail.com>
+FROM starefossen/ruby-node:2-8
+
+
+# Install Node
+# RUN apt-get -y update
+
+# RUN apt-get -y install git-core curl build-essential openssl libssl-dev \
+#  && git clone https://github.com/nodejs/node.git \
+#  && cd node \
+#  && ./configure \
+#  && make \
+#  && sudo make install
+
+RUN npm install --production --quiet cli-flags
+RUN npm install --production --quiet web3
+RUN npm install --production --quiet solc
 
 # Add application code
 ADD . /app
@@ -25,7 +39,10 @@ ENV RAILS_ENV production
 ENV SETTINGS_PATH /config/settings.yml
 
 # Define Docker Remote API
-ENV DOCKER_URL unix:///var/run/docker.sock
+ENV DOCKER_URL unix:///host/var/run/docker.sock
+
+# Define NODE_PATH
+ENV NODE_PATH /usr/local/lib/node_modules 
 
 # Command to run
 ENTRYPOINT ["/app/bin/run.sh"]
