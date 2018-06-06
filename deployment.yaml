@@ -1,0 +1,35 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: blockhead
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: blockhead
+    spec:
+      volumes:
+        - name: dockersocket
+          hostPath:
+            path: /var/run/docker.sock
+      containers:
+        - name: blockhead
+          image: swayr/blockhead
+          command:
+          volumeMounts:
+          - mountPath: /var/run/docker.sock
+            name: dockersocket
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: blockhead
+spec:
+  selector:
+    app: blockhead
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80

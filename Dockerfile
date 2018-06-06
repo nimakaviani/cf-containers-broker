@@ -39,7 +39,7 @@ ENV RAILS_ENV production
 ENV SETTINGS_PATH /config/settings.yml
 
 # Define Docker Remote API
-ENV DOCKER_URL unix:///host/var/run/docker.sock
+ENV DOCKER_URL unix:///var/run/docker.sock
 
 # Define NODE_PATH
 ENV NODE_PATH /usr/local/lib/node_modules 

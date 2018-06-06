@@ -1,23 +1,21 @@
 ---
-apiVersion: extensions/v1beta1
-kind: Deployment
+apiVersion: v1
+kind: Secret
 metadata:
-  name: blockhead-broker
+  name: blockheadsecret
+type: Opaque
+data:
+  username: Y29udGFpbmVycw==
+  password: c2VjcmV0
+---
+apiVersion: servicecatalog.k8s.io/v1beta1
+kind: ClusterServiceBroker
+metadata:
+  name: blockhead
 spec:
-  replicas: 1
-  template:
-    metadata:
-      labels:
-        name: blockhead-broker
-    spec:
-      volumes:
-        - name: dockersocket
-          hostPath:
-          path: /var/run/docker.sock
-      containers:
-        - name: blockhead-broker
-          image: swayr/blockhead
-          command:
-          volumeMounts:
-          - mountPath: /host/var/run/docker.sock
-            name: dockersocket
+  url: http://blockhead.default.svc.cluster.local
+  authInfo:
+    basic:
+      secretRef:
+        namespace: default
+        name: blockheadsecret
