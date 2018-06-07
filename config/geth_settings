@@ -1,0 +1,85 @@
+# This file should not be used in deployed environments. Instead, set
+# the SETTINGS_PATH environment variable to point to a configuration
+# file that contains these settings.
+
+defaults: &defaults
+  log_path: 'log/<%= Rails.env %>.log'
+  auth_username: <%= ENV['BROKER_USERNAME'] || "containers" %>
+  auth_password: <%= ENV['BROKER_PASSWORD'] || "secret" %>
+  cookie_secret: <%= ENV['COOKIE_SECRET'] || 'e7247dae-a252-4393-afa3-2219c1c02efd' %>
+  session_expiry: <%= ENV['SESSION_EXPIRY'] || 86400 %>
+
+  # Restrict a maximum number of service instances/containers; 0 if unlimited
+  max_containers: <%= ENV['MAX_CONTAINERS'] || 0 %>
+
+  # IP/host used as 'host' for binding credentials
+  external_ip: <%= ENV['EXTERNAL_IP'] || ENV['EXTERNAL_HOST'] || "127.0.0.1" %>
+
+  # Dashboard URL hostname
+  external_host: <%= ENV['EXTERNAL_HOST'] || "containers.vcap.me" %>
+  # Dashboard URL protocol - if ssl_enabled then https:// else http://
+  ssl_enabled: false
+
+  cc_api_uri: 'http://api.vcap.me'
+  skip_ssl_validation: true
+
+  # Root folder on host machine for all container volumes
+  host_directory: '/var/vcap/store/cf-containers-broker/'
+
+  # Allocates ephemeral ports on host machine for each exposed port in Docker image
+  allocate_docker_host_ports: true
+
+  # If provisioning services with `allocate_docker_host_ports: true`
+  # you can optionally enable the addition of a DOCKER_HOST_PORT_nnnn env var
+  # for each exposed port.
+  # This will create the container and then recreate the container with an additional
+  # DOCKER_HOST_PORT_nnnn environment variable for each exposed port.
+  # If you wish to disable this two-step provisioning process, set to true:
+  enable_host_port_envvar: false
+
+  # Ability to set environment variables to each container
+  # File "/envdir/FOOBAR" will add an env var $FOOBAR to each Docker container,
+  # set to the value from the file
+  container_env_var_dir: '/envdir'
+
+  services:
+  - name: 'eth'
+    id: '24736f4a-72b8-4298-96f7-b48c4045ddfd'
+    description: 'Ethereum Geth Node'
+    bindable: true
+    tags:
+      - 'eth'
+      - 'geth'
+    metadata:
+      displayName: 'Geth 1.8'
+      longDescription: 'Geth Node'
+      providerDisplayName: 'Cloud Foundry Community'
+    dashboard_client:
+      id: docker-broker-eth
+      secret: ((docker-broker-eth-secret))
+    plans:
+    - id: 'd42fc3cc-1341-4aa3-866e-01bc5243dc2e'
+      name: 'free'
+      container:
+        backend: 'docker'
+        image: 'nimak/eth-dev'
+      description: 'Free Trial'
+      metadata:
+        costs:
+          - amount:
+              usd: 0.0
+            unit: 'MONTHLY'
+        bullets:
+          - 'Dedicated Geth Node'
+
+assets:
+  <<: *defaults
+
+development:
+  <<: *defaults
+
+test:
+  <<: *defaults
+
+production:
+  <<: *defaults
