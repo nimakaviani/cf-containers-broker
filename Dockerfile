@@ -27,7 +27,7 @@ RUN cd /app && \
 
 # Add default configuration files
 ADD ./config/unicorn.conf.rb /config/unicorn.conf.rb
-ADD ./config/settings.yml /config/settings.yml
+ADD ./config/docker_settings.yml /config/settings.yml
 
 # Working directory
 WORKDIR /app

@@ -16,7 +16,7 @@ spec:
             path: /var/run/docker.sock
       containers:
         - name: blockhead
-          image: swayr/blockhead
+          image: jberkhahn/blockhead
           command:
           volumeMounts:
           - mountPath: /var/run/docker.sock
@@ -28,7 +28,7 @@ metadata:
   name: blockhead
 spec:
   selector:
-    app: blockhead
+    name: blockhead
   ports:
   - protocol: TCP
     port: 80
